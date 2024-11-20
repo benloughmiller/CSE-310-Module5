@@ -5,6 +5,7 @@ import sys
 # Import levels
 import level1
 import level2
+import level3
 
 pygame.init()
 
@@ -25,7 +26,7 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
-
+ORANGE = (255, 165, 0)
 # Fonts
 fontObj = pygame.font.Font('fonts/pixelfont.ttf', 16)
 
@@ -48,8 +49,8 @@ powerup_active = True
 can_double_jump = False
 
 # Levels and game state
-levels = [level1, level2]
-current_level_index = 0
+levels = [level1, level2, level3]
+current_level_index = 2
 gate = None
 platforms = []
 spawn_point = (0, 0)
@@ -174,9 +175,9 @@ def main():
         for platform in platforms:
             pygame.draw.rect(screen, GREEN, platform)
         if powerup_active and powerups:
-            pygame.draw.rect(screen, RED, (powerups[0][0], powerups[0][1], POWERUP_WIDTH, POWERUP_HEIGHT))
-        for death_zone in death_zones:  # Draw death zones
-            pygame.draw.rect(screen, RED, death_zones)
+            pygame.draw.rect(screen, ORANGE, (powerups[0][0], powerups[0][1], POWERUP_WIDTH, POWERUP_HEIGHT))
+        for death_zone in death_zones:
+            pygame.draw.rect(screen, RED, death_zone)
         if gate:
             pygame.draw.rect(screen, YELLOW, gate)
         pygame.display.flip()

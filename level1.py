@@ -10,10 +10,10 @@ def load_level():
     powerups = []
     gate = pygame.Rect(560, 250, 30, 50)
     death_zones = [
-        pygame.Rect(300, 480, 20, 20),  # Add a spike at (300, 480)
-        pygame.Rect(600, 380, 20, 20),  # Add another spike
+        pygame.Rect(0, 580, 800, 20)
     ]
     text_objects = [
-        {"content": "Welcome to Level 1!", "position": (10, 10)}
+        {"content": "Move with the Arrow Keys", "position": (30, 300)},
+        {"content": "Press Space to jump", "position": (50, 330)}
     ]
     return platforms, powerups, gate, spawn_point, text_objects, death_zones

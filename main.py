@@ -32,6 +32,9 @@ fontObj = pygame.font.Font('fonts/pixelfont.ttf', 16)
 
 # Sounds
 jump_sound = pygame.mixer.Sound("audio/jump.wav")
+death_sound = pygame.mixer.Sound("audio/death.wav")
+powerup_sound = pygame.mixer.Sound("audio/powerup.wav")
+goal_sound = pygame.mixer.Sound("audio/goal.wav")
 
 # Player settings
 PLAYER_WIDTH, PLAYER_HEIGHT = 25, 25
@@ -50,7 +53,7 @@ can_double_jump = False
 
 # Levels and game state
 levels = [level1, level2, level3]
-current_level_index = 2
+current_level_index = 0
 gate = None
 platforms = []
 spawn_point = (0, 0)
@@ -71,8 +74,7 @@ def main():
     global current_level_index, gate, spawn_point, text_objects, powerup_collected_time
 
     load_current_level()
-    player_x, player_y = spawn_point  # Reset player to spawn point
-
+    player_x, player_y = spawn_point
     running = True
     while running:
         for event in pygame.event.get():
@@ -89,13 +91,14 @@ def main():
             player_dx = player_speed
         if keys[pygame.K_SPACE]:
             if on_ground:
+                can_double_jump = False
                 player_dy = jump_strength
                 on_ground = False
                 jump_sound.play()
             elif can_double_jump:  # Allow a second jump if power-up is active
                 player_dy = jump_strength
                 can_double_jump = False  # Reset double jump after using it
-                jump_sound.play()
+                powerup_sound.play()
 
         # Apply gravity to the player
         player_dy += gravity
@@ -107,19 +110,20 @@ def main():
         # Create Player Rectangle
         player_rect = pygame.Rect(player_x, player_y, PLAYER_WIDTH, PLAYER_HEIGHT)
 
+        #Platform Collisions
         on_ground = False
         for platform in platforms:
             if player_rect.colliderect(platform):
-                # Platform Top Collision
-                if player_dy > 0 and player_rect.bottom <= platform.bottom:
+                if player_rect.bottom < platform.bottom:
                     player_y = platform.top - PLAYER_HEIGHT
                     player_dy = 0
                     on_ground = True
                 elif player_dy < 0 and player_rect.top >= platform.top:
                     player_y = platform.bottom
                     player_dy = 0
-                elif player_dx > 0 and player_rect.right > platform.left and player_rect.left < platform.left:
+                elif player_rect.left >= platform.left:
                     player_x = platform.left - PLAYER_WIDTH
+                    player_dx = 0
                 elif player_dx < 0 and player_rect.left < platform.right and player_rect.right > platform.right:
                     player_x = platform.right
 
@@ -140,12 +144,16 @@ def main():
         # Check collision with death zones
         for death_zone in death_zones:
             if player_rect.colliderect(death_zone):
+                death_sound.play()
                 player_x, player_y = spawn_point  # Reset to spawn point
                 player_dx, player_dy = 0, 0  # Reset movement
                 can_double_jump = False  # Reset double jump
+                powerup_active = True
+                powerup_collected_time = None
 
         # Check collision with the level gate
         if gate and player_rect.colliderect(gate):
+            goal_sound.play()
             current_level_index += 1
             if current_level_index < len(levels):
                 load_current_level()

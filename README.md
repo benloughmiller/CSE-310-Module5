@@ -5,7 +5,7 @@ This is a simple platformer game in which you try to reach the yellow gate in ea
 
 My purpose for writing this software is to show an example of how Python and the Pygame library can be used in game creation. 
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/QbNWZxjns94)
 
 # Development Environment
 
